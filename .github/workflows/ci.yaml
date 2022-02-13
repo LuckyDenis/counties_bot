@@ -17,8 +17,16 @@ jobs:
             python-version: ['3.8']
         steps:
             - uses: actions/checkout@v2
+            - name: Setup Python
+              uses: ./
+              with:
+                python-version: ${{ matrix.python-version }}
+                cache: 'poetry'
             - name: Install poetry
-              run: pip install poetry
+              run: |
+                pip install poetry
+                echo "$HOME/.local/bin" >>$GITHUB_PATH
+                export PATH="$HOME/.local/bin:$PATH"
             - name: Install develop dependencies
               run: poentry
             - name: Running flake8
