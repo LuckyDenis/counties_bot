@@ -19,8 +19,8 @@ jobs:
                 python-version: 3.8
             - name: Install poetry
               run: |
-                "$HOME/.local/bin" >> $GITHUB_PATH
                 pip install poetry
+                "$HOME/.local/bin" >> $GITHUB_PATH
 
             - name: Install develop dependencies
               run: |
