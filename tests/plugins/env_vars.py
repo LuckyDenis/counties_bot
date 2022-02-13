@@ -5,7 +5,6 @@ import pytest
 
 from counties_bot.config import consts as config_consts
 
-
 test_root_dir = pathlib.Path(__file__)
 project_root = test_root_dir.parent.parent.parent
 etc_dir = project_root.joinpath('etc')
@@ -23,5 +22,9 @@ def pytest_load_initial_conftests(*_):
     )
 
     os.environ[config_consts.COUNTIES_WEBHOOK] = (
-        str(project_config_dir.joinpath(config_consts.COUNTIES_WEBHOOK + '.yaml'))
+        str(
+            project_config_dir.joinpath(
+                config_consts.COUNTIES_WEBHOOK + '.yaml'
+            )
+        )
     )

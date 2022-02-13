@@ -26,5 +26,3 @@ class Start(BaseCommand):
 @dataclasses.dataclass(frozen=True)
 class Help(BaseCommand):
     _cmd = 'help'
-
-
