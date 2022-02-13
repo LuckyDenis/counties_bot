@@ -9,12 +9,21 @@ on:
           - master
           - develop
 jobs:
-    build:
+    python-poetry:
         runs-on: ubuntu-20.04
+        strategy:
+          fail-fast: false
+          matrix:
+            python-version: ['3.8']
         steps:
             - uses: actions/checkout@v2
             - name: Install poetry
               run: pipx install poetry
+            - name: Setup Python
+              uses: ./
+              with:
+                python-version: ${{ matrix.python-version }}
+                cache: 'poetry'
             - name: Install develop dependencies
               run: poentry
             - name: Running flake8
