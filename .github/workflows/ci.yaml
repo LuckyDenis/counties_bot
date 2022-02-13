@@ -18,7 +18,7 @@ jobs:
         steps:
             - uses: actions/checkout@v2
             - name: Install poetry
-              run: pipx install poetry
+              run: pip install poetry
             - name: Setup Python
               uses: ./
               with:
