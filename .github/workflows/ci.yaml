@@ -29,7 +29,7 @@ jobs:
 
             - name: Install develop dependencies
               run: |
-                python -m poentry install
+                poentry install
             - name: Running autotests
               run: |
                 python -m pytest
