@@ -15,11 +15,6 @@ jobs:
             - uses: actions/checkout@v2
             - name: Install poetry
               run: pipx install poetry
-            - name: Setup Python
-              uses: ./
-              with:
-                python-version: 3.8
-                cache: 'poetry'
             - name: Install develop dependencies
               run: poentry
             - name: Running flake8
