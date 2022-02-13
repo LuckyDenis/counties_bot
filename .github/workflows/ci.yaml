@@ -13,21 +13,16 @@ jobs:
         runs-on: ubuntu-20.04
         steps:
             - uses: actions/checkout@v2
-            - name: Set up Python
-              uses: actions/setup-python@v2
+            - name: Install poetry
+              run: pipx install poetry
+            - name: Setup Python
+              uses: ./
               with:
                 python-version: 3.8
-            - name: Install poetry
-              run: |
-                pip install poetry
-                "$HOME/.local/bin" >> $GITHUB_PATH
-
+                cache: 'poetry'
             - name: Install develop dependencies
-              run: |
-                poentry install
+              run: poentry
             - name: Running flake8
-              run: |
-                poetry run python -m flake8
+              run: poetry run python -m flake8
             - name: Running tests
-              run: |
-                poetry run python -m pytest
+              run: poetry run python -m pytest
