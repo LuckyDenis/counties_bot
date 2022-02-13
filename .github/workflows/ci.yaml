@@ -30,6 +30,6 @@ jobs:
                 virtualenvs-path: ~/my-custom-path
                 installer-parallel: true
             - name: Running flake8
-              run: poetry run python -m flake8
+              run: poetry run flake8
             - name: Running tests
-              run: poetry run python -m pytest
+              run: poetry run pytest
