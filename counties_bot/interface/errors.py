@@ -1,0 +1,2 @@
+class BaseRenderError(Exception):
+    pass
