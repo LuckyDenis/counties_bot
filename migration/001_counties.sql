@@ -1,7 +1,7 @@
 CREATE TABLE "user" (
   "id" bigint UNIQUE PRIMARY KEY NOT NULL,
   "language" varchar(2) DEFAULT 'en',
-  "game_name" varchar(36) UNIQUE NOT NULL,
+  "game_name" varchar(36) UNIQUE,
   "is_admin" boolean NOT NULL DEFAULT false,
   "is_accept" boolean NOT NULL DEFAULT false,
   "is_block" boolean NOT NULL DEFAULT false,

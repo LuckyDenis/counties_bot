@@ -26,19 +26,31 @@ class NewUser(BaseRender):
             cls, render_data: common.BaseRenderReq
     ) -> common.BaseMessage:
         return common.TextMessage(
-            chat_id=render_data.chat_id,
+            user_id=render_data.user_id,
             track_code=render_data.track_code,
             text='Новый пользователь ' + command.Start.as_cmd()
         )
 
 
-class OldUser(BaseRender):
+class OldUserAccepted(BaseRender):
     @classmethod
     async def _render(
             cls, render_data: common.BaseRenderReq
     ) -> common.BaseMessage:
         return common.TextMessage(
-            chat_id=render_data.chat_id,
+            user_id=render_data.user_id,
             track_code=render_data.track_code,
-            text='Старый пользователь ' + command.Start.as_cmd()
+            text='Старый пользователь согласился' + command.Start.as_cmd()
+        )
+
+
+class OldUserIsNotAccepted(BaseRender):
+    @classmethod
+    async def _render(
+            cls, render_data: common.BaseRenderReq
+    ) -> common.BaseMessage:
+        return common.TextMessage(
+            user_id=render_data.user_id,
+            track_code=render_data.track_code,
+            text='Старый пользователь не согласился' + command.Start.as_cmd()
         )

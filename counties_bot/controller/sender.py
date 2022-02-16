@@ -17,6 +17,6 @@ async def send_messages(
 async def _send_msg_with_text(
         bot: aiogram.Bot, message: icommon.TextMessage):
     await bot.send_message(
-        chat_id=message.chat_id,
+        chat_id=message.user_id,
         text=message.text,
     )
