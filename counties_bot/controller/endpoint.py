@@ -7,6 +7,7 @@ from controller import sender as bot_sender
 from core import runner as core_runner
 from interface import command as ui_cmd
 from interface import common as ui_common
+from controller import common
 
 bot_cfg = config_reader.get_bot_config()
 
@@ -16,21 +17,39 @@ dp = Dispatcher(bot)
 
 @dp.message_handler(commands=[ui_cmd.Start.as_text()])
 async def start(message: types.Message):
-    user_id = message.chat.id
-    message_id = message.message_id
-    track_code = f'tk-{user_id}-{message_id}'
-    language = message.from_user.language_code
-    pool = getattr(dp, 'pool')
+    pool = common.get_db_pool(dp)
+    track_code = common.get_track_code(message)
+    user_id = common.get_user_id(message)
+    language = common.get_user_language(message)
 
-    start_state = core_runner.Start(
+    core_result = core_runner.Start(
         pool=pool,
         user_id=user_id,
         language=language,
         track_code=track_code,
     )
-    await start_state.run()
+    await core_result.run()
     answers: typing.List[ui_common.BaseMessage] = (
-        start_state.get_answers()
+        core_result.get_answers()
+    )
+
+    await bot_sender.send_messages(bot, answers)
+
+
+@dp.message_handler(commands=[ui_cmd.Accept.as_text()])
+async def accept(message: types.Message):
+    pool = common.get_db_pool(dp)
+    track_code = common.get_track_code(message)
+    user_id = common.get_user_id(message)
+
+    core_result = core_runner.Accept(
+        pool=pool,
+        user_id=user_id,
+        track_code=track_code,
+    )
+    await core_result.run()
+    answers: typing.List[ui_common.BaseMessage] = (
+        core_result.get_answers()
     )
 
     await bot_sender.send_messages(bot, answers)

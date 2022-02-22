@@ -1,3 +1,4 @@
+import logging
 import enum
 import typing
 
@@ -7,7 +8,18 @@ from interface import common as ui_common
 from core.common import user
 
 
-class Start:
+logger = logging.getLogger(__name__)
+
+
+class BaseCmdRunner:
+    async def run(self):
+        raise NotImplementedError()
+
+    def get_answers(self) -> typing.List[ui_common.BaseMessage]:
+        raise NotImplementedError()
+
+
+class Start(BaseCmdRunner):
     class State(enum.Enum):
         START = enum.auto()
         NEW_USER = enum.auto()
@@ -38,6 +50,7 @@ class Start:
         IS_OLD_USER_ACCEPTED -------- OLD_USER_IS_NOT_ACCEPTED
         """
         while self.state != self.State.DONE:
+            logger.debug('cmd: start -- (state: %s)', self.state)
             if self.state == self.State.START:
                 await self._start()
             if self.state == self.State.NEW_USER:
@@ -122,13 +135,14 @@ class Start:
         self.state = self.State.ADD_OLD_USER_LANGUAGE
 
 
-class Accept:
+class Accept(BaseCmdRunner):
     class State(enum.Enum):
         START = enum.auto()
         DONE = enum.auto()
         ADD_USER_LANGUAGE = enum.auto()
         USER_IS_NOT_EXIST = enum.auto()
         UPDATE_USER_ACCEPT = enum.auto()
+        USER_ACCEPTED = enum.auto()
 
     def __init__(self, pool, user_id, track_code):
         self.state = self.State.START
@@ -142,9 +156,12 @@ class Accept:
         """
         START -- USER_IS_NOT_EXIST -- DONE
          |                             |
-        ADD_USER_LANGUAGE -- UPDATE_USER_ACCEPT
+        ADD_USER_LANGUAGE             |
+         |                           |
+        UPDATE_USER_ACCEPT -- USER_ACCEPTED
         """
         while self.state != self.State.DONE:
+            logger.debug('cmd: start -- (state: %s)', self.state)
             if self.state == self.State.START:
                 await self._start()
             if self.state == self.State.USER_IS_NOT_EXIST:
@@ -153,8 +170,10 @@ class Accept:
                 await self._add_user_language()
             if self.state == self.State.UPDATE_USER_ACCEPT:
                 await self._update_user_accept()
+            if self.state == self.State.USER_ACCEPTED:
+                await self._user_accepted()
 
-    async def get_answers(self) -> typing.List[ui_common.BaseMessage]:
+    def get_answers(self) -> typing.List[ui_common.BaseMessage]:
         return self.answers
 
     async def _start(self):
@@ -176,7 +195,31 @@ class Accept:
         self.state = self.State.UPDATE_USER_ACCEPT
 
     async def _update_user_accept(self):
+        await user.update_user_is_accept(
+            pool=self.pool,
+            user_id=self.user_id,
+        )
+
+        self.state = self.State.USER_ACCEPTED
+
+    async def _user_accepted(self):
+        answer = await ui_render.UserTakeAccept.render(
+            ui_common.BaseRenderReq(
+                user_id=self.user_id,
+                language=self.language,
+                track_code=self.track_code,
+            )
+        )
+        self.answers.append(answer)
         self.state = self.State.DONE
 
     async def _user_is_not_exist(self):
+        answer = await ui_render.UserIsNotExist.render(
+            ui_common.BaseRenderReq(
+                user_id=self.user_id,
+                language=self.language,
+                track_code=self.track_code,
+            )
+        )
+        self.answers.append(answer)
         self.state = self.State.DONE

@@ -27,3 +27,10 @@ SELECT "language"
 FROM "public"."user"
 WHERE "id" = $1;
 """
+
+
+UPDATE_USER_ACCEPT = """
+UPDATE "public"."user"
+SET "is_accept" = $2
+WHERE "id" = $1;
+"""

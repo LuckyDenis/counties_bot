@@ -1,8 +1,14 @@
+import logging
+
 import asyncpg
 
 from aiogram import executor
 
 from config import reader as config_reader
+
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 
 async def polling_on_startup(bot_dispatcher):

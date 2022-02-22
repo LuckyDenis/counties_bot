@@ -28,7 +28,7 @@ class NewUser(BaseRender):
         return common.TextMessage(
             user_id=render_data.user_id,
             track_code=render_data.track_code,
-            text='Новый пользователь ' + command.Start.as_cmd()
+            text='Новый пользователь ' + command.Accept.as_cmd()
         )
 
 
@@ -52,5 +52,29 @@ class OldUserIsNotAccepted(BaseRender):
         return common.TextMessage(
             user_id=render_data.user_id,
             track_code=render_data.track_code,
-            text='Старый пользователь не согласился' + command.Start.as_cmd()
+            text='Старый пользователь не согласился' + command.Accept.as_cmd()
+        )
+
+
+class UserTakeAccept(BaseRender):
+    @classmethod
+    async def _render(
+            cls, render_data: common.BaseRenderReq
+    ) -> common.BaseMessage:
+        return common.TextMessage(
+            user_id=render_data.user_id,
+            track_code=render_data.track_code,
+            text='Пользователь дал свое согласие' + command.Start.as_cmd()
+        )
+
+
+class UserIsNotExist(BaseRender):
+    @classmethod
+    async def _render(
+            cls, render_data: common.BaseRenderReq
+    ) -> common.BaseMessage:
+        return common.TextMessage(
+            user_id=render_data.user_id,
+            track_code=render_data.track_code,
+            text='Пользователь не существует' + command.Start.as_cmd()
         )

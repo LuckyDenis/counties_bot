@@ -28,3 +28,9 @@ async def get_user_language(pool: asyncpg.Pool, user_id: int) -> str:
     return await storage_query.get_user_language(
         pool=pool, user_id=user_id
     )
+
+
+async def update_user_is_accept(pool: asyncpg.Pool, user_id: int) -> str:
+    return await storage_query.update_user_is_accept(
+        pool=pool, user_id=user_id
+    )
