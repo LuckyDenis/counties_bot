@@ -17,13 +17,13 @@ dp = Dispatcher(bot)
 
 @dp.message_handler(commands=[ui_cmd.Start.as_text()])
 async def start(message: types.Message):
-    pool = common.get_db_pool(dp)
+    dependence = common.get_dependence(dp)
     track_code = common.get_track_code(message)
     user_id = common.get_user_id(message)
     language = common.get_user_language(message)
 
     core_result = core_runner.Start(
-        pool=pool,
+        dependence=dependence,
         user_id=user_id,
         language=language,
         track_code=track_code,
@@ -38,12 +38,12 @@ async def start(message: types.Message):
 
 @dp.message_handler(commands=[ui_cmd.Accept.as_text()])
 async def accept(message: types.Message):
-    pool = common.get_db_pool(dp)
+    dependence = common.get_dependence(dp)
     track_code = common.get_track_code(message)
     user_id = common.get_user_id(message)
 
     core_result = core_runner.Accept(
-        pool=pool,
+        dependence=dependence,
         user_id=user_id,
         track_code=track_code,
     )

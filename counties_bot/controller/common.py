@@ -1,6 +1,8 @@
 import aiogram
-import asyncpg
+
 from aiogram import types as aiogram_types
+
+from common import staff as common_staff
 
 
 def get_user_id(message: aiogram_types.Message) -> int:
@@ -17,5 +19,7 @@ def get_user_language(message: aiogram_types.Message) -> str:
     return message.from_user.language_code
 
 
-def get_db_pool(dp: aiogram.Dispatcher) -> asyncpg.Pool:
-    return getattr(dp, 'pool')
+def get_dependence(
+        dp: aiogram.Dispatcher
+) -> common_staff.Dependence:
+    return getattr(dp, 'dependence')

@@ -31,11 +31,11 @@ class Start(BaseCmdRunner):
         OLD_USER_IS_NOT_ACCEPTED = enum.auto()
         ADD_OLD_USER_LANGUAGE = enum.auto()
 
-    def __init__(self, pool, user_id, language, track_code):
+    def __init__(self, dependence, user_id, language, track_code):
         self.state = self.State.START
         self.user_id = user_id
         self.language = language
-        self.pool = pool
+        self.dependence = dependence
         self.answers = []
         self.track_code = track_code
 
@@ -71,7 +71,7 @@ class Start(BaseCmdRunner):
 
     async def _start(self):
         is_user_exist = await user.is_user_exist(
-            pool=self.pool,
+            pool=self.dependence.pool,
             user_id=self.user_id
         )
         if not is_user_exist:
@@ -80,7 +80,11 @@ class Start(BaseCmdRunner):
             self.state = self.State.OLD_USER
 
     async def _new_user(self):
-        await user.create_user(self.pool, self.user_id, self.language)
+        await user.create_user(
+            pool=self.dependence.pool,
+            user_id=self.user_id,
+            language=self.language,
+        )
         self.state = self.State.CREATED_USER
 
     async def _create_user(self):
@@ -96,7 +100,7 @@ class Start(BaseCmdRunner):
 
     async def _is_old_user_accepted(self):
         is_accepted = await user.is_user_accept(
-            pool=self.pool,
+            pool=self.dependence.pool,
             user_id=self.user_id,
         )
         if is_accepted:
@@ -128,7 +132,7 @@ class Start(BaseCmdRunner):
 
     async def _add_old_user_language(self):
         old_user_language = await user.get_user_language(
-            pool=self.pool,
+            pool=self.dependence.pool,
             user_id=self.user_id,
         )
         self.language = old_user_language
@@ -144,11 +148,11 @@ class Accept(BaseCmdRunner):
         UPDATE_USER_ACCEPT = enum.auto()
         USER_ACCEPTED = enum.auto()
 
-    def __init__(self, pool, user_id, track_code):
+    def __init__(self, dependence, user_id, track_code):
         self.state = self.State.START
         self.user_id = user_id
         self.language = 'en'
-        self.pool = pool
+        self.dependence = dependence
         self.track_code = track_code
         self.answers = []
 
@@ -178,7 +182,7 @@ class Accept(BaseCmdRunner):
 
     async def _start(self):
         is_user_exist = await user.is_user_exist(
-            pool=self.pool,
+            pool=self.dependence.pool,
             user_id=self.user_id
         )
         if not is_user_exist:
@@ -188,7 +192,7 @@ class Accept(BaseCmdRunner):
 
     async def _add_user_language(self):
         old_user_language = await user.get_user_language(
-            pool=self.pool,
+            pool=self.dependence.pool,
             user_id=self.user_id,
         )
         self.language = old_user_language
@@ -196,7 +200,7 @@ class Accept(BaseCmdRunner):
 
     async def _update_user_accept(self):
         await user.update_user_is_accept(
-            pool=self.pool,
+            pool=self.dependence.pool,
             user_id=self.user_id,
         )
 
